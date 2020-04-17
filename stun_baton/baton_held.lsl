@@ -1,4 +1,4 @@
-// [SGD] Baton Prop Held v1.0 - Copyright 2020 Alex Pascal (Alex Carpenter) @ Second Life.
+// [SGD] Baton Prop Held v1.0.1 - Copyright 2020 Alex Pascal (Alex Carpenter) @ Second Life.
 // ---------------------------------------------------------------------------------------------------------
 // This Source Code Form is subject to the terms of the Mozilla Public License, v2.0. 
 //  If a copy of the MPL was not distributed with this file, You can obtain one at 
@@ -8,6 +8,8 @@ integer g_appChan       = 44;           // Channel this app set runs on.
 integer g_isHolstered   = TRUE;         // TRUE if the baton is holstered.
 integer g_isOn          = FALSE;        // TRUE if the baton is activated.
 integer g_emitterPrim   = 0;            // Link number of the particle emitter.
+float   g_curTimer      = 0.0;          // Current delay for the spark timer event.
+float   g_backTimer     = 0.0;          // Timer for FX backgrounding.
 // ---------------------------------------------------------------------------------------------------------
 
 // doHoldAnimation - Starts or stops the correct animation for the attach point.
@@ -42,7 +44,8 @@ doHoldAnimation(integer start)
 // ---------------------------------------------------------------------------------------------------------
 turnOn()
 {
-    llSetTimerEvent(1.0);
+    g_backTimer = 0.0;
+    llSetTimerEvent(g_curTimer = 1.0);
     llTriggerSound("d57b8592-b9d7-be1b-25ea-35fcbe4d9070", 1.0);
     llSetLinkPrimitiveParamsFast(LINK_THIS, [
         PRIM_TEXTURE, ALL_SIDES, "468d4e68-cbe0-9300-7572-5b2d6faabfcf", <1.0, 1.0, 0.0>, ZERO_VECTOR, 0.0,
@@ -101,8 +104,9 @@ default
 {
     timer() // Handles itermittent sparking.
     {
-        llSetTimerEvent(0.2 + llFrand(4.0));
-        llTriggerSound("0f5dec85-611f-15ed-1067-9e4e2fce5405", 0.6);
+        g_backTimer += g_curTimer;
+        llSetTimerEvent(g_curTimer = 0.2 + llFrand(4.0));
+        llTriggerSound("0f5dec85-611f-15ed-1067-9e4e2fce5405", 0.6 - (0.594 * (g_backTimer > 18.0)));
         
         llLinkParticleSystem(g_emitterPrim, [
             PSYS_SRC_PATTERN,           PSYS_SRC_PATTERN_EXPLODE,
@@ -123,6 +127,11 @@ default
         ]);
         llSleep(0.1);
         llLinkParticleSystem(g_emitterPrim, []);
+    }
+
+    moving_end() // Reset the FX backgrounder when the avatar moves.
+    {
+        g_backTimer = 0.0;
     }
 
     state_entry() // Init.
