@@ -65,23 +65,28 @@ giveCharSheet(key user)
     {
         string note = llGetInventoryName(INVENTORY_NOTECARD, 0);
 
-        // Make sure we can transfer a copy of the notecard to the toucher.
-        if (llGetInventoryPermMask(note, MASK_OWNER) & (PERM_COPY | PERM_TRANSFER))
-        {
-            llOwnerSay("secondlife:///app/agent/" + ((string)user) + "/completename" +
-                " has taken a copy of your character sheet.");
+        llOwnerSay("secondlife:///app/agent/" + ((string)user) + "/completename" +
+            " has requested your character sheet.");
 
-            llGiveInventory(user, note); // Offer notecard.
-        }
-        else
+        // If name is a URL, do a load URL to external instead of notecard vend.
+        if (llGetSubString(note, 0, 6) == "http://" || llGetSubString(note, 0, 7) == "https://")
         {
-            llInstantMessage(user, "No character sheet is available.");
+            string nameURI = "secondlife:///app/agent/" + ((string)llGetOwner()) + "/completename";
+
+            llLoadURL(user, "External Character Sheet\n\nID: " + nameURI, note);
+
+            llInstantMessage(user, "External Character Sheet for " + nameURI + ": " + note);
+            return;
+        }
+        // Make sure we can transfer a copy of the notecard to the toucher.
+        else if (llGetInventoryPermMask(note, MASK_OWNER) & (PERM_COPY | PERM_TRANSFER))
+        {
+            llGiveInventory(user, note); // Offer notecard.
+            return;
         }
     }
-    else // No notecard present.
-    {
-        llInstantMessage(user, "No character sheet is available.");
-    }
+    
+    llInstantMessage(user, "No character sheet is available.");
 }
 
 default
