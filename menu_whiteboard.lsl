@@ -88,7 +88,11 @@ default
             llSetLinkPrimitiveParamsFast(LINK_THIS, [
                 PRIM_TEXTURE, 2, mesg, <1.0, 1.0, 0.0>, ZERO_VECTOR, 0.0
             ]);
-            llRegionSayTo(id, 0, "Custom texture set.");
+            llRegionSayTo(id, 0, "Custom whiteboard texture set.");
+        }
+        else // Erroneous input on channel.
+        {
+            llRegionSayTo(id, 0, "Custom whiteboard texture failed. Invalid UUID.")
         }
     }
 }
