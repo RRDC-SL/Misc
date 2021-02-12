@@ -42,6 +42,7 @@ default
     state_entry()
     {
         llSetMemoryLimit(llGetUsedMemory() + 2048);
+        llSetColor(<1.0,1.0,1.0>, 2); // Prepare whiteboard for use.
         g_channel = -1 * (integer)llFrand(DEBUG_CHANNEL);
         llListen(g_channel, "", "", "");
     }
