@@ -92,7 +92,7 @@ default
         }
         else // Erroneous input on channel.
         {
-            llRegionSayTo(id, 0, "Custom whiteboard texture failed. Invalid UUID.")
+            llRegionSayTo(id, 0, "Failed to set whiteboard texture. Invalid UUID.");
         }
     }
 }
