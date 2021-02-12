@@ -42,6 +42,7 @@ default
     {
         llSetMemoryLimit(llGetUsedMemory() + 2048);
         g_channel = -1 * (integer)llFrand(DEBUG_CHANNEL);
+        llListen(g_channel, "", "", "");
     }
 
     touch_start(integer total_number)
