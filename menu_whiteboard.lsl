@@ -1,4 +1,5 @@
 // [SGD] RRDC Menu Whiteboard v1.0 - Copyright 2021 Sasha Wyrding (Alex Carpenter) @ Second Life.
+// For '[P.0.E] - Whiteboard (Alpha Face)'. Just drop in and set object group to 'Red Rock Detention Center'.
 // ---------------------------------------------------------------------------------------------------------
 // This Source Code Form is subject to the terms of the Mozilla Public License, v2.0. 
 //  If a copy of the MPL was not distributed with this file, You can obtain one at 
