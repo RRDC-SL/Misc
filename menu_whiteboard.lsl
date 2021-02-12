@@ -70,7 +70,7 @@ default
                 PRIM_TEXTURE, 2, "8dcd4a48-2d37-4909-9f78-f7a9eb4ef903",
                 <1.0, 1.0, 0.0>, ZERO_VECTOR, 0.0
             ]);
-            llRegionSayTo(llDetectedKey(0), 0, "Whiteboard cleared.");
+            llRegionSayTo(id, 0, "Whiteboard cleared.");
         }
         else if (mesg == "✎ Set Custom")
         {
@@ -81,14 +81,14 @@ default
             llSetLinkPrimitiveParamsFast(LINK_THIS, [
                 PRIM_TEXTURE, 2, mesg, <1.0, 1.0, 0.0>, ZERO_VECTOR, 0.0
             ]);
-            llRegionSayTo(llDetectedKey(0), 0, "Set to preset: " + mesg);
+            llRegionSayTo(id, 0, "Set to preset: " + mesg);
         }
         else if ((key)mesg) // Custom.
         {
             llSetLinkPrimitiveParamsFast(LINK_THIS, [
                 PRIM_TEXTURE, 2, mesg, <1.0, 1.0, 0.0>, ZERO_VECTOR, 0.0
             ]);
-            llRegionSayTo(llDetectedKey(0), 0, "Custom texture set.");
+            llRegionSayTo(id, 0, "Custom texture set.");
         }
     }
 }
