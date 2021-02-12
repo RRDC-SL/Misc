@@ -42,9 +42,14 @@ default
     state_entry()
     {
         llSetMemoryLimit(llGetUsedMemory() + 2048);
+
         llSetColor(<1.0,1.0,1.0>, 2); // Prepare whiteboard for use.
+        llSetTexture("8dcd4a48-2d37-4909-9f78-f7a9eb4ef903", 2);
+        llScaleTexture(1.0, 1.0, 2);
+
         g_channel = -1 * (integer)llFrand(DEBUG_CHANNEL);
         llListen(g_channel, "", "", "");
+        llWhisper(0, "Whiteboard ready.");
     }
 
     touch_start(integer total_number)
