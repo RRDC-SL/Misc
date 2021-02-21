@@ -19,7 +19,7 @@ setCrotchState()
     llWhisper(getAvChannel(llGetOwner()),
         "JUMPSUIT_CROTCH_" + llList2String(["SHOW", "HIDE"], g_hideCrotch));
     llSetLinkPrimitiveParamsFast(LINK_THIS, [
-        PRIM_TEXTURE, ALL_SIDES, "955b8313-e263-b6c0-5ae3-3b87dc21b588", <1.0, 1.0, 0.0>,
+        PRIM_TEXTURE, ALL_SIDES, "9ba301a6-4d73-c7e8-d09c-617f3ea3b2c8", <1.0, 1.0, 0.0>,
         <0.0, (0.5 * g_hideCrotch), 0.0>, 0.0
     ]);
 }
