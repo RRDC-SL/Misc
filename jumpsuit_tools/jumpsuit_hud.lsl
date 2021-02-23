@@ -34,7 +34,12 @@ default
 
     on_rez(integer start)
     {
-        llSleep(5.0);
+        llSetTimerEvent(5.0);
+    }
+
+    timer()
+    {
+        llSetTimerEvent(0.0);
         setCrotchState();
     }
 
