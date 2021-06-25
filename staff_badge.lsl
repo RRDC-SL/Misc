@@ -1,10 +1,4 @@
-// Original Staff Badge Script with additions by Alex Pascal.
-// Changes:
-//    CharSheet giver is now permissions safe.
-//    Wearer now gets notified when a charsheet is taken.
-//    Added option for wearer to get own charsheet.
-//    Added script memory limit.
-
+// <snipped LSL preprocessor text>
 float txtCharSpacing = 0.03;
 key textFont = "7910e702-2efc-78a5-aa78-ae0cbf3e03d4";
 
@@ -99,7 +93,7 @@ default
     state_entry()
     {
         llSetMemoryLimit(llGetUsedMemory() + 1024);
-        
+
         primN1 = findChildByName("n1");
         primN2 = findChildByName("n2");
         primP1 = findChildByName("p1");
@@ -116,7 +110,8 @@ default
         
         if(toucher == llGetOwner())
         {
-            llDialog(toucher, "What do.", ["Name", "Position", "ID Num", "Image", "CharSheet"], 524196);
+            llDialog(toucher, "What do.", [
+                "Name", "Position", "ID Num", "Image", "Rank", "CharSheet"], 524196);
         }
         else
         {
@@ -128,7 +123,7 @@ default
     {
         if(llGetOwnerKey(id) != llGetOwner())
             return;
-        
+            
         if (str == "CharSheet")
         {
             giveCharSheet(llGetOwner());
@@ -153,105 +148,146 @@ default
             lMode = 3;
             llTextBox(id, "Enter new ID number:", 524196);
         }
-        else
+        
+        else if(str == "Rank") //This is new, please help!
+        {       
+            lMode = 4;
+            llDialog(id, "Select the rank you wish to display", [
+                "Spacer", "Petty Officer", "Chief Petty Officer", 
+                "Lieutenant", "1st Lieutenant", "Lt. Commander", 
+                "Captain"], 524196);
+
+        }
+        else if (str == "Spacer")
         {
-            if(lMode == 0)
+            llSetTexture("18023a59-d67e-d773-4772-05dc372ebf46", 0);
+            llListenRemove(524196);
+        }
+        else if (str == "Petty Officer")
+        {
+            llSetTexture("1a53510e-c54e-2a32-972c-c9f64cea389d", 0);
+            llListenRemove(524196);
+        }
+        else if (str == "Chief Petty Officer")
+        {
+            llSetTexture("369764af-469c-923a-f238-7380a548dd95", 0);
+            llListenRemove(524196);
+        }
+        else if (str == "Lieutenant")
+        {
+            llSetTexture("13fd1d91-eed2-cd6a-b335-fb66d1a2f746", 0);
+            llListenRemove(524196);
+        }
+        else if (str == "1st Lieutenant")
+        {
+            llSetTexture("e9b9316d-b19c-8fc9-0f3c-e9233a40cc3c", 0);
+            llListenRemove(524196);
+        }
+        else if (str == "Lt. Commander")
+        {
+            llSetTexture("82614392-1708-156c-cd53-5b38f5281379", 0);
+            llListenRemove(524196);
+        }
+        else if (str == "Captain")
+        {
+            llSetTexture("0a0543d2-e685-33e0-a52a-eae612a7527f", 0);
+            llListenRemove(524196);
+        }
+        else if(lMode == 0)
+        {
+            llSetTexture((key)str, 1);
+        }
+        else if(lMode == 1)
+        {
+            string line = str;
+            integer len = llStringLength(str);
+            if(len < 16)
             {
-                llSetTexture((key)str, 1);
+                integer lettersMissing = 16 - len;
+                
+                integer i;
+                for(i=0;i<lettersMissing;i++)
+                    line = " "+line;
             }
-            else if(lMode == 1)
+            
+            string partOne = llGetSubString(line, 0, 7);
+            string partTwo = llGetSubString(line, 8, -1);
+            
+            vector gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 0, 0)));
+            vector gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 1, 1)));
+            vector gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 2, 2)));
+            vector gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 3, 3)));
+            vector gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 4, 4)));
+            vector gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 5, 5)));
+            vector gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 6, 6)));
+            vector gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 7, 7)));
+            offsetTextures(primN1, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
+            
+            gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 0, 0)));
+            gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 1, 1)));
+            gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 2, 2)));
+            gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 3, 3)));
+            gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 4, 4)));
+            gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 5, 5)));
+            gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 6, 6)));
+            gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 7, 7)));
+            offsetTextures(primN2, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
+        }
+        else if(lMode == 2)
+        {
+            string line = str;
+            integer len = llStringLength(str);
+            if(len < 16)
             {
-                string line = str;
-                integer len = llStringLength(str);
-                if(len < 16)
-                {
-                    integer lettersMissing = 16 - len;
-                    
-                    integer i;
-                    for(i=0;i<lettersMissing;i++)
-                        line = " "+line;
-                }
+                integer lettersMissing = 16 - len;
                 
-                string partOne = llGetSubString(line, 0, 7);
-                string partTwo = llGetSubString(line, 8, -1);
-                
-                vector gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 0, 0)));
-                vector gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 1, 1)));
-                vector gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 2, 2)));
-                vector gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 3, 3)));
-                vector gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 4, 4)));
-                vector gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 5, 5)));
-                vector gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 6, 6)));
-                vector gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 7, 7)));
-                offsetTextures(primN1, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
-                
-                gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 0, 0)));
-                gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 1, 1)));
-                gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 2, 2)));
-                gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 3, 3)));
-                gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 4, 4)));
-                gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 5, 5)));
-                gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 6, 6)));
-                gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 7, 7)));
-                offsetTextures(primN2, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
+                integer i;
+                for(i=0;i<lettersMissing;i++)
+                    line = " "+line;
             }
-            else if(lMode == 2)
+            
+            string partOne = llGetSubString(line, 0, 7);
+            string partTwo = llGetSubString(line, 8, -1);
+            
+            vector gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 0, 0)));
+            vector gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 1, 1)));
+            vector gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 2, 2)));
+            vector gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 3, 3)));
+            vector gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 4, 4)));
+            vector gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 5, 5)));
+            vector gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 6, 6)));
+            vector gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 7, 7)));
+            offsetTextures(primP1, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
+            
+            gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 0, 0)));
+            gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 1, 1)));
+            gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 2, 2)));
+            gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 3, 3)));
+            gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 4, 4)));
+            gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 5, 5)));
+            gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 6, 6)));
+            gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 7, 7)));
+            offsetTextures(primP2, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
+        }
+        else if(lMode == 3)
+        {
+            string line = str;
+            integer len = llStringLength(str);
+            if(len < 5)
             {
-                string line = str;
-                integer len = llStringLength(str);
-                if(len < 16)
-                {
-                    integer lettersMissing = 16 - len;
-                    
-                    integer i;
-                    for(i=0;i<lettersMissing;i++)
-                        line = " "+line;
-                }
+                integer lettersMissing = 5 - len;
                 
-                string partOne = llGetSubString(line, 0, 7);
-                string partTwo = llGetSubString(line, 8, -1);
-                
-                vector gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 0, 0)));
-                vector gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 1, 1)));
-                vector gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 2, 2)));
-                vector gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 3, 3)));
-                vector gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 4, 4)));
-                vector gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 5, 5)));
-                vector gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 6, 6)));
-                vector gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partOne, 7, 7)));
-                offsetTextures(primP1, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
-                
-                gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 0, 0)));
-                gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 1, 1)));
-                gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 2, 2)));
-                gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 3, 3)));
-                gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 4, 4)));
-                gO6 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 5, 5)));
-                gO7 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 6, 6)));
-                gO8 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(partTwo, 7, 7)));
-                offsetTextures(primP2, gO1, gO2, gO3, gO4, gO5, gO6, gO7, gO8);
+                integer i;
+                for(i=0;i<lettersMissing;i++)
+                    line = " "+line;
             }
-            else if(lMode == 3)
-            {
-                string line = str;
-                integer len = llStringLength(str);
-                if(len < 5)
-                {
-                    integer lettersMissing = 5 - len;
-                    
-                    integer i;
-                    for(i=0;i<lettersMissing;i++)
-                        line = " "+line;
-                }
-                
-                vector gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 0, 0)));
-                vector gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 1, 1)));
-                vector gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 2, 2)));
-                vector gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 3, 3)));
-                vector gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 4, 4)));
-                offsetTextures(primID, gO1, gO2, gO3, gO4, gO5, ZERO_VECTOR, ZERO_VECTOR, ZERO_VECTOR);
-            }
+            
+            vector gO1 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 0, 0)));
+            vector gO2 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 1, 1)));
+            vector gO3 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 2, 2)));
+            vector gO4 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 3, 3)));
+            vector gO5 = getGridOffset(llSubStringIndex(txtChrIndex, llGetSubString(line, 4, 4)));
+            offsetTextures(primID, gO1, gO2, gO3, gO4, gO5, ZERO_VECTOR, ZERO_VECTOR, ZERO_VECTOR);
         }
     }
 }
-
